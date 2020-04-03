@@ -1,4 +1,5 @@
 import numpy as np
+import pandas as pd
 import sys
 
 class Bot:
@@ -14,9 +15,10 @@ class Bot:
         
         self.y = np.zeros((64, 1))
         
-        self.Theta1 = np.random.uniform(low=-0.5, high=0.5, size=(64, 65))
-        self.Theta2 = np.random.uniform(low=-0.5, high=0.5, size=(64, 65))
-        self.Theta3 = np.random.uniform(low=-0.5, high=0.5, size=(64, 65))
+        Theta = pd.read_csv('thetas.csv')
+        self.Theta1 = np.array(Theta[['Theta1']]).reshape((64, 65))
+        self.Theta2 = np.array(Theta[['Theta2']]).reshape((64, 65))
+        self.Theta3 = np.array(Theta[['Theta3']]).reshape((64, 65))
         
         if(color == 'R'):
             self.dict = {
@@ -156,9 +158,7 @@ while (True):
     move = str(x) + ' ' + str(y)
     print(move)
     
-    
-    
-    
+
     
     
     
