@@ -326,7 +326,7 @@ def init():
     move_speed = int(sys.argv[1])
     p1 = subprocess.Popen(['python', 'bot.py','R'], stdout=subprocess.PIPE, stdin=subprocess.PIPE,
                           universal_newlines=True, bufsize=1)
-    p2 = subprocess.Popen(['python',  'player_code.py','G'], stdout=subprocess.PIPE, stdin=subprocess.PIPE,
+    p2 = subprocess.Popen(['python',  'bot.py','G'], stdout=subprocess.PIPE, stdin=subprocess.PIPE,
                           universal_newlines=True, bufsize=1)
     print('start', file=p1.stdin, flush=True)
     print('start', file=p2.stdin, flush=True)
@@ -340,7 +340,11 @@ def display_grid():
     glTranslatef(0.0, 0.0, -45)
     # cur_player = 0
     while True:
-
+        
+        if is_over:
+            # pygame.time.wait(2000)
+            exit()
+        
         if not is_over and len(cubes_to_update) > 0:
             draw_reaction(cubes_to_update)
             temp = cubes_to_update.copy()
@@ -387,14 +391,16 @@ def display_grid():
         else:
             draw_text((-5, 4, 30.0), "Player 2's move", 24, (10, 250, 10, 255))
         glColor3f(1-cur_player, cur_player, 0)
-        draw_grid()
-        draw_spheres()
+        # draw_grid()
+        # draw_spheres()
         if invalid_move:
             draw_text((-4, 1, 30.0), "Invalid Move by Player" + str(cur_player+1), 64, (120, 120, 220, 255))
             is_over = True
 
         if check_winner() != -1:
             draw_text((-2.5, 0, 30.0), "Player " + str(check_winner()+1)+" Wins", 64, (120, 120, 220, 255))
+            with open('winner.txt', 'w') as winf:
+                winf.write(str(check_winner()))
             is_over = True
         pygame.display.flip()
         pygame.time.wait(10)
