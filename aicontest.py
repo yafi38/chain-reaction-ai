@@ -311,10 +311,10 @@ p2 = None
 def init():
     global grid, angles, cur_player, cubes_to_update, grid_updated, move_count, move_read, invalid_move, move_speed, p1, \
             p2
-    pygame.init()
-    display = (800, 800)
-    pygame.display.set_mode(display, DOUBLEBUF | OPENGL)
-    gluPerspective(45, (display[0] / display[1]), 0.1, 80.0)
+    # pygame.init()
+    # display = (800, 800)
+    # pygame.display.set_mode(display, DOUBLEBUF | OPENGL)
+    # gluPerspective(45, (display[0] / display[1]), 0.1, 80.0)
     grid = np.full((8, 8), 'No')
     cubes_to_update = []
     angles = np.zeros((8, 8))
@@ -336,27 +336,28 @@ def init():
 def display_grid():
     global is_over, grid, cur_player, players, cubes_to_update, grid_updated, move_count, move_read, invalid_move, \
         move_count
-    glColor3f(1, 0, 0)
-    glTranslatef(0.0, 0.0, -45)
+    # glColor3f(1, 0, 0)
+    # glTranslatef(0.0, 0.0, -45)
     # cur_player = 0
     while True:
         
         if is_over:
             # pygame.time.wait(2000)
-            exit()
+            # pygame.quit()
+            sys.exit(0)
         
         if not is_over and len(cubes_to_update) > 0:
-            draw_reaction(cubes_to_update)
+            # draw_reaction(cubes_to_update)
             temp = cubes_to_update.copy()
             cubes_to_update.clear()
             for update in temp:
                 reaction(update)
-            pygame.time.wait(move_speed)
+            # pygame.time.wait(move_speed)
 
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                pygame.quit()
-                quit()
+        # for event in pygame.event.get():
+        #     if event.type == pygame.QUIT:
+        #         pygame.quit()
+                # quit()
 
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
 
@@ -370,40 +371,42 @@ def display_grid():
             if check_validity(selected_cube):
                 selected_cube = [int(i) for i in selected_cube]
                 update_grid(selected_cube)
-                pygame.time.wait(move_speed)
-                glColor3f(.6, .6, .6)
-                draw_move(selected_cube)
+                # pygame.time.wait(move_speed)
+                # glColor3f(.6, .6, .6)
+                # draw_move(selected_cube)
             # else:
             # invalid move
         if not is_over:
-            draw_reaction(cubes_to_update)
+            # draw_reaction(cubes_to_update)
+            pass
         if not is_over and grid_updated and len(cubes_to_update) == 0:
             cur_player = 1 - cur_player
             write_grid_2()
             grid_updated = False
             move_read = False
 
-        draw_text((-5, 5.0, 30.0), "CHAIN REACTION", 32, (120, 120, 220, 255))
-        draw_text((-5, 5.5, 30.0), "CSE Fest 2019 - AI Contest", 24, (120, 120, 220, 255))
+        # draw_text((-5, 5.0, 30.0), "CHAIN REACTION", 32, (120, 120, 220, 255))
+        # draw_text((-5, 5.5, 30.0), "CSE Fest 2019 - AI Contest", 24, (120, 120, 220, 255))
 
-        if cur_player == 0:
-            draw_text((-5, 4, 30.0), "Player 1's move", 24, (250, 10, 10, 255))
-        else:
-            draw_text((-5, 4, 30.0), "Player 2's move", 24, (10, 250, 10, 255))
-        glColor3f(1-cur_player, cur_player, 0)
+        # if cur_player == 0:
+        #     draw_text((-5, 4, 30.0), "Player 1's move", 24, (250, 10, 10, 255))
+        # else:
+        #     draw_text((-5, 4, 30.0), "Player 2's move", 24, (10, 250, 10, 255))
+        # glColor3f(1-cur_player, cur_player, 0)
         # draw_grid()
         # draw_spheres()
         if invalid_move:
-            draw_text((-4, 1, 30.0), "Invalid Move by Player" + str(cur_player+1), 64, (120, 120, 220, 255))
+            # draw_text((-4, 1, 30.0), "Invalid Move by Player" + str(cur_player+1), 64, (120, 120, 220, 255))
             is_over = True
 
         if check_winner() != -1:
-            draw_text((-2.5, 0, 30.0), "Player " + str(check_winner()+1)+" Wins", 64, (120, 120, 220, 255))
+            # draw_text((-2.5, 0, 30.0), "Player " + str(check_winner()+1)+" Wins", 64, (120, 120, 220, 255))
             with open('winner.txt', 'w') as winf:
                 winf.write(str(check_winner()))
             is_over = True
-        pygame.display.flip()
-        pygame.time.wait(10)
+            
+        # pygame.display.flip()
+        # pygame.time.wait(10)
 
 
 if __name__ == "__main__":
