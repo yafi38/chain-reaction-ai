@@ -1,24 +1,12 @@
 import numpy as np
 import pandas as pd
 import sys
-from sklearn.preprocessing import normalize
 
 
 class Bot:
     def __init__(self, color):
         # self.cost = 0
         # self.moves = 0
-        
-        self.X = np.random.uniform(0, 1, (65, 1))
-        self.X[-1] = 1
-        
-        self.a1 = np.zeros((65, 1))
-        self.a1[-1] = 1
-        
-        self.a2 = np.zeros((65, 1))
-        self.a2[-1] = 1
-        
-        self.y = np.zeros((64, 1))
         
         # Theta = pd.read_csv('fit_thetas.csv')
         if (color == 'R'):    
@@ -30,7 +18,7 @@ class Bot:
    
         self.Theta1 = np.array(Theta[['Theta1']]).reshape((64, 65))
         self.Theta2 = np.array(Theta[['Theta2']]).reshape((64, 65))
-        self.Theta3 = np.array(Theta[['Theta3']]).reshape((64, 65))
+        # self.Theta3 = np.array(Theta[['Theta3']]).reshape((64, 65))
         
         if(color == 'R'):
             self.dict = {
@@ -54,33 +42,40 @@ class Bot:
             }
 
     def get_move(self, board):
-        self.X[:-1] = np.array(list(map(self.dict.get, board))).reshape(-1, 1)
+        X = np.zeros((65, 1))
+        X[-1] = 1
+        X[:-1] = np.array(list(map(self.dict.get, board))).reshape(-1, 1)
         # print(self.X)
-        self.a1[:-1] = np.matmul(self.Theta1, self.X)
-        self.a1 = self.a1 * (self.a1 > 0)
+        a1 = np.zeros((65, 1))
+        a1[-1] = 1
         
-        self.a2[:-1] = np.matmul(self.Theta2, self.a1)
-        self.a2 = self.a2 * (self.a2 > 0)
+        a1[:-1] = np.matmul(self.Theta1, X)
+        a1 = a1 * (a1 > 0)
         
-        self.y = np.matmul(self.Theta3, self.a2)
-        my_move = np.argmax(self.y)
-        # self.y = (1 / (1 + np.exp(-self.y)))
-        cost = self.move_cost(self.y)
+        # a2 = np.zeros((65, 1))
+        # a2[-1] = 1
+        
+        # a2[:-1] = np.matmul(self.Theta2, a1)
+        # a2 = a2 * (a2 > 0)
+        
+        y = np.matmul(self.Theta2, a1)
+        my_move = np.argmax(y)
+        
+        cost = self.move_cost(X, y)
         # self.moves = self.moves + 1
-        # avg_err = self.cost / self.moves
+        
         self.log_file.write(str(cost))
         self.log_file.write('\n')
         self.log_file.flush()
         
         return my_move
     
-    def move_cost(self, y):
-        y = normalize(y, axis=0)
+    def move_cost(self, X, y):
         y = np.exp(y)
         sm = np.sum(y)
         y /= sm
         
-        ind_zero = self.X[:-1] >= 0
+        ind_zero = X[:-1] >= 0
         y[ind_zero] = 0
         
         y = np.log(1 - y)
